@@ -1,4 +1,4 @@
-import urlparse
+import urllib.parse
 
 from .context import _RootContext
 from .parser import _autocast
@@ -67,7 +67,7 @@ def EVEAPIConnection(url="api.eveonline.com", cacheHandler=None, proxy=None, pro
 
     if not url.startswith("http"):
         url = "https://" + url
-    p = urlparse.urlparse(url, "https")
+    p = urllib.parse.urlparse(url, "https")
     if p.path and p.path[-1] == "/":
         p.path = p.path[:-1]
     ctx = _RootContext(None, p.path, {}, {})

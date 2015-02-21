@@ -54,7 +54,7 @@ def _ParseXML(response, fromContext, storeFunc):
 
     if fromContext and isinstance(response, Element):
         obj = response
-    elif type(response) in (str, unicode):
+    elif type(response) in (str, str):
         obj = _Parser().Parse(response, False)
     elif hasattr(response, "read"):
         obj = _Parser().Parse(response, True)
@@ -192,7 +192,7 @@ class _Parser(object):
                 if not self.container._cols or (numAttr > numCols):
                     # the row data contains more attributes than were defined.
                     self.container._cols = attributes[0::2]
-                self.container.append([_castfunc(attributes[i], attributes[i + 1]) for i in xrange(0, len(attributes), 2)])
+                self.container.append([_castfunc(attributes[i], attributes[i + 1]) for i in range(0, len(attributes), 2)])
             # </hack>
 
             this._isrow = True
@@ -281,7 +281,7 @@ class _Parser(object):
                         e = Element()
                         e._name = this._name
                         setattr(self.container, this._name, e)
-                        for i in xrange(0, len(attributes), 2):
+                        for i in range(0, len(attributes), 2):
                             setattr(e, attributes[i], attributes[i+1])
                     else:
                         # tag of the form: <tag />, treat as empty string.
@@ -294,7 +294,7 @@ class _Parser(object):
             # multiples of some tag or attribute. Code below handles this case.
             elif isinstance(sibling, Rowset):
                 # its doppelganger is a rowset, append this as a row to that.
-                row = [_castfunc(attributes[i], attributes[i+1]) for i in xrange(0, len(attributes), 2)]
+                row = [_castfunc(attributes[i], attributes[i+1]) for i in range(0, len(attributes), 2)]
                 row.extend([getattr(this, col) for col in attributes2])
                 sibling.append(row)
             elif isinstance(sibling, Element):
@@ -303,11 +303,11 @@ class _Parser(object):
                 # into a Rowset, adding the sibling element and this one.
                 rs = Rowset()
                 rs.__catch = rs._name = this._name
-                row = [_castfunc(attributes[i], attributes[i+1]) for i in xrange(0, len(attributes), 2)]+[getattr(this, col) for col in attributes2]
+                row = [_castfunc(attributes[i], attributes[i+1]) for i in range(0, len(attributes), 2)]+[getattr(this, col) for col in attributes2]
                 rs.append(row)
-                row = [getattr(sibling, attributes[i]) for i in xrange(0, len(attributes), 2)]+[getattr(sibling, col) for col in attributes2]
+                row = [getattr(sibling, attributes[i]) for i in range(0, len(attributes), 2)]+[getattr(sibling, col) for col in attributes2]
                 rs.append(row)
-                rs._cols = [attributes[i] for i in xrange(0, len(attributes), 2)]+[col for col in attributes2]
+                rs._cols = [attributes[i] for i in range(0, len(attributes), 2)]+[col for col in attributes2]
                 setattr(self.container, this._name, rs)
             else:
                 # something else must have set this attribute already.
@@ -315,7 +315,7 @@ class _Parser(object):
                 pass
 
         # Now fix up the attributes and be done with it.
-        for i in xrange(0, len(attributes), 2):
+        for i in range(0, len(attributes), 2):
             this.__dict__[attributes[i]] = _castfunc(attributes[i], attributes[i+1])
 
         return

@@ -5,7 +5,7 @@ class Error(Exception):
         self.args = (message.rstrip("."),)
 
     def __unicode__(self):
-        return u'%s [code=%s]' % (self.args[0], self.code)
+        return '%s [code=%s]' % (self.args[0], self.code)
 
 
 class RequestError(Error):

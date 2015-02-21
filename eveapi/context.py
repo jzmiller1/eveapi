@@ -1,5 +1,5 @@
-import httplib
-import urllib
+import http.client
+import urllib.request, urllib.parse, urllib.error
 import warnings
 
 from eveapi import DEFAULT_UA, USER_AGENT
@@ -43,7 +43,7 @@ class _Context(object):
     def __call__(self, **kw):
         if kw:
             # specified keywords override contextual ones
-            for k, v in self.parameters.iteritems():
+            for k, v in self.parameters.items():
                 if k not in kw:
                     kw[k] = v
         else:
@@ -79,7 +79,7 @@ class _RootContext(_Context):
 
     def __call__(self, path, **kw):
         # convert list type arguments to something the API likes
-        for k, v in kw.iteritems():
+        for k, v in kw.items():
             if isinstance(v, _listtypes):
                 kw[k] = ','.join(map(str, list(v)))
 
@@ -100,26 +100,26 @@ class _RootContext(_Context):
             if self._proxy is None:
                 req = path
                 if self._scheme == "https":
-                    conn = httplib.HTTPSConnection(self._host)
+                    conn = http.client.HTTPSConnection(self._host)
                 else:
-                    conn = httplib.HTTPConnection(self._host)
+                    conn = http.client.HTTPConnection(self._host)
             else:
                 req = self._scheme+'://'+self._host+path
                 if self._proxySSL:
-                    conn = httplib.HTTPSConnection(*self._proxy)
+                    conn = http.client.HTTPSConnection(*self._proxy)
                 else:
-                    conn = httplib.HTTPConnection(*self._proxy)
+                    conn = http.client.HTTPConnection(*self._proxy)
 
             if kw:
-                conn.request("POST", req, urllib.urlencode(kw), {"Content-type": "application/x-www-form-urlencoded", "User-Agent": USER_AGENT or DEFAULT_UA})
+                conn.request("POST", req, urllib.parse.urlencode(kw), {"Content-type": "application/x-www-form-urlencoded", "User-Agent": USER_AGENT or DEFAULT_UA})
             else:
                 conn.request("GET", req, "", {"User-Agent": USER_AGENT or DEFAULT_UA})
 
             response = conn.getresponse()
             if response.status != 200:
-                if response.status == httplib.NOT_FOUND:
+                if response.status == http.client.NOT_FOUND:
                     raise AttributeError("'%s' not available on API server (404 Not Found)" % path)
-                elif response.status == httplib.FORBIDDEN:
+                elif response.status == http.client.FORBIDDEN:
                     raise AuthenticationError(response.status, 'HTTP 403 - Forbidden')
                 else:
                     raise ServerError(response.status, "'%s' request failed (%s)" % (path, response.reason))
@@ -137,7 +137,7 @@ class _RootContext(_Context):
             # implementor is handling fallbacks...
             try:
                 return _ParseXML(response, True, store and (lambda obj: cache.store(self._host, path, kw, response, obj)))
-            except Error, e:
+            except Error as e:
                 response = retrieve_fallback(self._host, path, kw, reason=e)
                 if response is not None:
                     return response

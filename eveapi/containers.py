@@ -6,7 +6,7 @@ class Element(object):
     def __str__(self):
         return "<Element '%s'>" % self._name
 
-_fmt = u"%s:%s".__mod__
+_fmt = "%s:%s".__mod__
 
 
 class Row(object):
@@ -21,7 +21,7 @@ class Row(object):
         self._cols = cols or []
         self._row = row or []
 
-    def __nonzero__(self):
+    def __bool__(self):
         return True
 
     def __ne__(self, other):
@@ -57,7 +57,7 @@ class Row(object):
         return self._row[self._cols.index(this)]
 
     def __str__(self):
-        return "Row(" + ','.join(map(_fmt, zip(self._cols, self._row))) + ")"
+        return "Row(" + ','.join(map(_fmt, list(zip(self._cols, self._row)))) + ")"
 
 
 class Rowset(object):
@@ -117,7 +117,7 @@ class Rowset(object):
                 for line in self._rows:
                     yield line[i]
         else:
-            i = map(self._cols.index, columns)
+            i = list(map(self._cols.index, columns))
             if options.get("row", False):
                 for line in self._rows:
                     yield line, [line[x] for x in i]
@@ -143,7 +143,7 @@ class Rowset(object):
                 self._rows += other._rows
         raise TypeError("rowset instance expected")
 
-    def __nonzero__(self):
+    def __bool__(self):
         return not not self._rows
 
     def __len__(self):
