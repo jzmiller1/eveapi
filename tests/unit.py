@@ -14,11 +14,6 @@ class ImportTestCase(TestCase):
 
     def test_imports(self):
         import eveapi
-        from eveapi import EVEAPIConnection
-        from eveapi import Error
-        from eveapi import AuthenticationError
-        from eveapi import RequestError
-        from eveapi import ServerError
 
 
 if __name__ == '__main__':

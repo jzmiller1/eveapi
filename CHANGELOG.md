@@ -1,3 +1,6 @@
+Version: 2.0 - 21 February 2015
+- Created first 2.0 version with backwards incompatibile changes.
+
 Version: 1.4 - 21 February 2015
 - Moved package to folder, split one file to speparate files.
 

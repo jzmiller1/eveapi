@@ -1,9 +1,9 @@
-VERSION = '1.4'
+VERSION = '2.0'
 DEFAULT_UA = "eveapi.py/{}".format(VERSION)
 USER_AGENT = None
 
 from .api import (
-    EVEAPIConnection
+    Connect
 )
 from .exceptions import (
     AuthenticationError,
